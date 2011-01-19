@@ -88,6 +88,7 @@ for size in files:
             filecounter += 1
             if filecounter%100 == 0:
                 logging.debug("hashed %d files" % filecounter)
+    files.pop(size)
 
 # output the result
 for key in same:

@@ -19,7 +19,6 @@ def process_file(path):
 logging.info("searching for files in current directory ('%s')" 
         % os.path.abspath(os.curdir))
 dirs = [os.curdir]
-
 # will contain all the files by their hashsum/size
 # TODO: put this in a database instead of having it in memory
 files = {}

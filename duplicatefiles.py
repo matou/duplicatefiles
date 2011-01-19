@@ -23,7 +23,7 @@ def process_file(path):
     md5 = hashlib.md5()
     while True:
         # do NOT load the whole file into memory:
-        byte = f.read(1)
+        byte = f.read(10*1024)
         if not byte:
             break
         md5.update(byte)

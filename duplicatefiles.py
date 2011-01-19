@@ -57,8 +57,7 @@ while len(dirs) > 0:
             dirs.append(f)
         # else ignore (if neither file nor directory, e.g. symlink)
 
-logging.info("found %d files" % filecounter)
-logging.debug(files)
+logging.info("found %d files bigger than %d bytes" % (filecounter, threshold))
 
 # output the result
 for key in files:

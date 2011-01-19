@@ -54,7 +54,7 @@ while len(dirs) > 0:
     for f in os.listdir(curdir):
         f = curdir + os.sep + f
         if os.path.isfile(f):
-            if os.path.getsize(f) < threshold:
+            if os.path.getsize(f) <= threshold:
                 spam("ignored %s" % f)
                 continue
             key = process_file(f)

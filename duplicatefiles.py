@@ -19,7 +19,8 @@ def process_file(path):
     f = open(path)
     md5 = hashlib.md5()
     while True:
-        # do NOT load the whole file into memory:
+        # do NOT load the whole file into memory
+        # whole files in memory aren't kewl
         byte = f.read(10*1024)
         if not byte:
             break

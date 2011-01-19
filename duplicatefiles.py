@@ -40,3 +40,11 @@ while len(dirs) > 0:
 
 logging.info("found %d files" % filecounter)
 logging.debug(files)
+
+# output the result
+for key in files:
+    if len(files[key]) > 1:
+        print "these files are the same: ",
+        for f in files[key]:
+            print "%s, " % f,
+        print ""

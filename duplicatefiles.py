@@ -8,6 +8,7 @@ def process_file(path):
     f = open(path)
     md5 = hashlib.md5()
     while True:
+        # do NOT load the whole file into memory:
         byte = f.read(1)
         if not byte:
             break
@@ -27,6 +28,9 @@ filecounter = 0
 while len(dirs) > 0:
     curdir = dirs.pop()
     for f in os.listdir(curdir):
+        # debugging
+        if filecounter%101 == 100:
+            logging.debug("processed %d files" % filecounter)
         f = curdir + os.sep + f
         if os.path.isfile(f):
             key = process_file(f)

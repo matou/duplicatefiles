@@ -6,11 +6,14 @@ logging.basicConfig(level=logging.DEBUG)
 # very verbose output?
 SPAM = True
 
+# files that are smaller than the threshold will be ignored
+threshold = 1024
+
 def spam(msg):
     if SPAM:
         logging.debug(msg)
 
-# processed byte
+# processed bytes
 pb = 0
 
 def process_file(path):
@@ -39,12 +42,17 @@ filecounter = 0
 while len(dirs) > 0:
     curdir = dirs.pop()
     for f in os.listdir(curdir):
-        # debugging
+        # debug
         spam("processed %d KB" % (pb/1024))
         if filecounter%101 == 100:
             logging.debug("processed %d files" % filecounter)
+        # end debug
+
         f = curdir + os.sep + f
         if os.path.isfile(f):
+            if os.path.getsize(f) < threshold:
+                logging.debug("ignored %s" % f)
+                continue
             key = process_file(f)
             if not files.has_key(key):
                 files[key] = []

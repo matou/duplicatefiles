@@ -1,13 +1,25 @@
 import os,sys,hashlib,logging
 
 # init logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 # very verbose output?
 SPAM = False
 
 # files that are smaller than the threshold will be ignored
 threshold = 1024
+
+loglevel = {"debug":logging.DEBUG,"info":logging.INFO,"warning":logging.WARNING, 
+        "error":logging.ERROR,"fatal":logging.FATAL,"spam":logging.DEBUG}
+
+# parse arguments:
+for i in range(len(sys.argv)):
+    if sys.argv[i] == "-l":
+        logging.basicConfig(level=loglevel[sys.argv[i+1].lower()])
+        if sys.argv[i+1].lower() == "spam":
+            SPAM = True
+    if sys.argv[i] == "-t":
+        threshold = int(sys.argv[i+1])
 
 def spam(msg):
     if SPAM:

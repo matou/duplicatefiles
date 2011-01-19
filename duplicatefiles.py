@@ -4,7 +4,7 @@ import os,sys,hashlib,logging
 logging.basicConfig(level=logging.DEBUG)
 
 # very verbose output?
-SPAM = True
+SPAM = False
 
 # files that are smaller than the threshold will be ignored
 threshold = 1024
@@ -51,7 +51,7 @@ while len(dirs) > 0:
         f = curdir + os.sep + f
         if os.path.isfile(f):
             if os.path.getsize(f) < threshold:
-                logging.debug("ignored %s" % f)
+                spam("ignored %s" % f)
                 continue
             key = process_file(f)
             if not files.has_key(key):

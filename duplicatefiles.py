@@ -26,10 +26,7 @@ def spam(msg):
     if SPAM:
         logging.debug("SPAM:%s" % msg)
 
-logging.debug("this is debugged")
-spam("spam")
 logging.debug("threshold is %d" % threshold)
-
 
 def hash_file(path):
     "returns hashsum as string"

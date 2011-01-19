@@ -3,8 +3,19 @@ import os,sys,hashlib,logging
 # init logging
 logging.basicConfig(level=logging.DEBUG)
 
+# very verbose output?
+SPAM = True
+
+def spam(msg):
+    if SPAM:
+        logging.debug(msg)
+
+# processed byte
+pb = 0
+
 def process_file(path):
     "returns a tuple (hashsum, size)"
+    spam("processing %s" % path)
     f = open(path)
     md5 = hashlib.md5()
     while True:
@@ -29,6 +40,7 @@ while len(dirs) > 0:
     curdir = dirs.pop()
     for f in os.listdir(curdir):
         # debugging
+        spam("processed %d KB" % (pb/1024))
         if filecounter%101 == 100:
             logging.debug("processed %d files" % filecounter)
         f = curdir + os.sep + f
@@ -38,6 +50,7 @@ while len(dirs) > 0:
                 files[key] = []
             files[key].append(f)
             filecounter += 1
+            pb += os.path.getsize(f)
         elif os.path.isdir(f):
             dirs.append(f)
         # else ignore (if neither file nor directory, e.g. symlink)

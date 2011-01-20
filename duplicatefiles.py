@@ -78,7 +78,8 @@ logging.info("found %d files bigger than %d bytes" % (filecounter, threshold))
 same = {}
 # hash files that are of same size
 filecounter = 0
-for size in files:
+sizes = files.keys()
+for size in sizes:
     if len(files[size]) > 1:
         for f in files[size]:
             hashsum = hash_file(f)

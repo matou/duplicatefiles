@@ -1,11 +1,13 @@
 #!/usr/bin/python2
 
-import os,sys,hashlib,logging
+import os,sys,hashlib,logging,sqlite3,random
 
 # init logging
 level = logging.INFO
 # very verbose output?
 SPAM = False
+# a database file to store the huge amount of data that will be gathered
+database = "/tmp/dupfdb.%d" % random.randint(0,2**32)
 
 # files that are smaller than the threshold will be ignored
 threshold = 1024
@@ -21,8 +23,17 @@ for i in range(len(sys.argv)):
             SPAM = True
     if sys.argv[i] == "-t":
         threshold = int(sys.argv[i+1])
+    if sys.argv[i] == "-d":
+        database = sys.argv[i+1])
 
 logging.basicConfig(level=level)
+
+# connect to the database
+dbconnection = sqlite3.connect()
+db = dbconnection.cursor()
+# create tables for the data
+db.execute("CREATE TABLE files (size INTEGER, path TEXT)")
+db.execute("CREATE TABLE same (size INTEGER, hash TEXT, path TEXT)")
 
 def spam(msg):
     if SPAM:

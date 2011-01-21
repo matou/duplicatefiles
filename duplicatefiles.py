@@ -24,12 +24,12 @@ for i in range(len(sys.argv)):
     if sys.argv[i] == "-t":
         threshold = int(sys.argv[i+1])
     if sys.argv[i] == "-d":
-        database = sys.argv[i+1])
+        database = sys.argv[i+1]
 
 logging.basicConfig(level=level)
 
 # connect to the database
-dbconnection = sqlite3.connect()
+dbconnection = sqlite3.connect(database)
 db = dbconnection.cursor()
 # create tables for the data
 db.execute("CREATE TABLE files (size INTEGER, path TEXT)")
@@ -59,10 +59,13 @@ def hash_file(path):
 # first collect all files that aren't directories or symlinks
 logging.info("searching for files in current directory ('%s')" 
         % os.path.abspath(os.curdir))
+
+# don't store this in the database. hopefully we won't have so many directories
+# that the programm will run out of memory
 dirs = [os.curdir]
-# will contain all the files by their hashsum/size
-# TODO: put this in a database instead of having it in memory
-files = {}
+
+# this dictionary is replaced by the files table in the database
+#files = {}
 
 filecounter = 0
 while len(dirs) > 0:
@@ -70,13 +73,13 @@ while len(dirs) > 0:
     for f in os.listdir(curdir):
         f = curdir + os.sep + f
         if os.path.isfile(f):
-            if os.path.getsize(f) <= threshold:
+            size = os.path.getsize(f)
+            if size <= threshold:
                 spam("ignored %s" % f)
                 continue
-            key = os.path.getsize(f)
-            if not files.has_key(key):
-                files[key] = []
-            files[key].append(f)
+            db.execute("INSERT INTO files VALUES(%d, '%s')" % (size, f))
+            # TODO: think where the commit should be done
+            dbconnection.commit()
             filecounter += 1
             # debug
             if filecounter%10000 == 0:
@@ -88,26 +91,26 @@ while len(dirs) > 0:
 
 logging.info("found %d files bigger than %d bytes" % (filecounter, threshold))
 
-same = {}
+# replaced by table same
+# same = {}
 # hash files that are of same size
 filecounter = 0
-sizes = files.keys()
-for size in sizes:
-    if len(files[size]) > 1:
-        for f in files[size]:
-            hashsum = hash_file(f)
-            if not same.has_key((size, hashsum)):
-                same[(size,hashsum)] = []
-            same[(size,hashsum)].append(f)
-            filecounter += 1
-            if filecounter%100 == 0:
-                logging.debug("hashed %d files" % filecounter)
-    files.pop(size)
+db.execute("SELECT MAX(size) FROM files")
+biggest = db.fetchall()[0][0]
+if not biggest:
+    biggest = 0
+for size in range(biggest):
+    db.execute("SELECT * FROM files WHERE size=%d" % size)
+    entries = db.fetchall()
+    if len(entries) < 2:
+        continue
+    for entry in entries:
+        db.execute("INSERT INTO same VALUES (%d, '%s', '%s')" % 
+                (size, hash_file(entry[1]), entry[1]))
+        dbconnection.commit()
 
-# output the result
-for key in same:
-    if len(same[key]) > 1:
-        print "these files are the same: ",
-        for f in same[key]:
-            print "%s, " % f,
-        print ""
+db.execute("SELECT * FROM same")
+for blubb in db:
+    print str(blubb)
+        
+

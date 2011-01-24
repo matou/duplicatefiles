@@ -5,9 +5,5 @@ have a hell of a mess. I don't want to lose any data. Especially not my
 pictures. I hope this will speed up cleaning. The goal is to identify duplicates
 in my backups and thusly reduce the data that I have to check manually.
 
-Current status: The python script works fine for several GB of files on my
-machine. Unfortunately it uses way too much memory when I set it on my backups. 
-
-Plans: I plan to solve that by writing the collected data to a database instead
-of having it all in memory. That will have the additional advantage that I can
-use all the data afterwards for other purposes. 
+Since the script now uses a database for its collected data instead of having
+everything in memory it should work even with huge amounts of files.

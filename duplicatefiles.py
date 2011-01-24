@@ -78,16 +78,18 @@ while len(dirs) > 0:
                 spam("ignored %s" % f)
                 continue
             db.execute("INSERT INTO files VALUES(%d, '%s')" % (size, f))
-            # TODO: think where the commit should be done
-            dbconnection.commit()
             filecounter += 1
             # debug
+            spam("found %d files" % filecounter)
             if filecounter%10000 == 0:
+                dbconnection.commit()
                 logging.debug("found %d files" % filecounter)
             # end debug
         elif os.path.isdir(f):
             dirs.append(f)
         # else ignore (if neither file nor directory, e.g. symlink)
+
+dbconnection.commit()
 
 logging.info("found %d files bigger than %d bytes" % (filecounter, threshold))
 

@@ -96,12 +96,16 @@ logging.info("found %d files bigger than %d bytes" % (filecounter, threshold))
 # replaced by table same
 # same = {}
 # hash files that are of same size
-filecounter = 0
 db.execute("SELECT MAX(size) FROM files")
 biggest = db.fetchall()[0][0]
 if not biggest:
     biggest = 0
-for size in range(biggest):
+size = 0
+while True:
+    if size > biggest:
+        break
+    else:
+        size += 1
     db.execute("SELECT * FROM files WHERE size=%d" % size)
     entries = db.fetchall()
     if len(entries) < 2:

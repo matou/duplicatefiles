@@ -101,6 +101,7 @@ biggest = db.fetchall()[0][0]
 if not biggest:
     biggest = 0
 size = 0
+count = 0
 while True:
     if size > biggest:
         break
@@ -113,7 +114,11 @@ while True:
     for entry in entries:
         db.execute("INSERT INTO same VALUES ('%d:%s', '%s')" % 
                 (size, hash_file(entry[1]), entry[1]))
-        dbconnection.commit()
+        count += 1
+        if count%1000 == 0:
+            dbconnection.commit()
+
+dbconnection.commit()
 
 db.execute("SELECT DISTINCT tag FROM same AS s WHERE (SELECT COUNT(tag) FROM same as s2 where s2.tag=s.tag)>1")
 tags = db.fetchall()

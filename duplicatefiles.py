@@ -109,8 +109,11 @@ for size in range(biggest):
                 (size, hash_file(entry[1]), entry[1]))
         dbconnection.commit()
 
-db.execute("SELECT * FROM same")
-for blubb in db:
-    print str(blubb)
-        
-
+db.execute("SELECT DISTINCT tag FROM same AS s WHERE (SELECT COUNT(tag) FROM same as s2 where s2.tag=s.tag)>1")
+tags = db.fetchall()
+for tag in tags:
+    db.execute("SELECT path FROM same WHERE tag='%s'" % tag[0])
+    print "these files are the same: ",
+    for path in db:
+        print("%s," % path[0]),
+    print ""

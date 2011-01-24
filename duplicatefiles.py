@@ -107,6 +107,7 @@ while True:
         break
     else:
         size += 1
+    spam("trying files of size %d bytes" % size)
     db.execute("SELECT * FROM files WHERE size=%d" % size)
     entries = db.fetchall()
     if len(entries) < 2:

@@ -33,7 +33,7 @@ dbconnection = sqlite3.connect(database)
 db = dbconnection.cursor()
 # create tables for the data
 db.execute("CREATE TABLE files (size INTEGER, path TEXT)")
-db.execute("CREATE TABLE same (size INTEGER, hash TEXT, path TEXT)")
+db.execute("CREATE TABLE same (tag TEXT, path TEXT)")
 
 def spam(msg):
     if SPAM:
@@ -105,7 +105,7 @@ for size in range(biggest):
     if len(entries) < 2:
         continue
     for entry in entries:
-        db.execute("INSERT INTO same VALUES (%d, '%s', '%s')" % 
+        db.execute("INSERT INTO same VALUES ('%d:%s', '%s')" % 
                 (size, hash_file(entry[1]), entry[1]))
         dbconnection.commit()
 

@@ -77,7 +77,11 @@ while len(dirs) > 0:
             if size <= threshold:
                 spam("ignored %s" % f)
                 continue
-            db.execute("INSERT INTO files VALUES(?, ?)", (size, unicode(f, "UTF-8")))
+            try:
+                db.execute("INSERT INTO files VALUES(?, ?)", (size, unicode(f, "UTF-8")))
+            except UnicodeDecodeError:
+                logging.error("%s caused a UnicodeDecodeError. Ignoring and moving on." % f)
+
             filecounter += 1
             # debug
             spam("found %d files" % filecounter)

@@ -72,6 +72,9 @@ while len(dirs) > 0:
     curdir = dirs.pop()
     for f in os.listdir(curdir):
         f = curdir + os.sep + f
+        if os.path.islink(f):
+            # don't bother us with links *grrr*
+            continue
         if os.path.isfile(f):
             size = os.path.getsize(f)
             if size <= threshold:

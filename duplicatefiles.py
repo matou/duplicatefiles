@@ -74,6 +74,7 @@ while len(dirs) > 0:
         f = curdir + os.sep + f
         if os.path.islink(f):
             # don't bother us with links *grrr*
+            spam("ignoring link: %s" % f)
             continue
         if os.path.isfile(f):
             size = os.path.getsize(f)

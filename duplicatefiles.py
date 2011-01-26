@@ -133,3 +133,5 @@ for tag in tags:
     for path in db:
         print("%s," % path[0]),
     print ""
+
+logging.info("END OF LINE")

@@ -107,7 +107,7 @@ while True:
         break
     else:
         size += 1
-    spam("trying files of size %d bytes" % size)
+    spam("trying files of size %d bytes (biggest: %d)" % (size, biggest))
     db.execute("SELECT * FROM files WHERE size=%d" % size)
     entries = db.fetchall()
     if len(entries) < 2:
@@ -116,7 +116,9 @@ while True:
         db.execute("INSERT INTO same VALUES ('%d:%s', '%s')" % 
                 (size, hash_file(entry[1]), entry[1]))
         count += 1
+        spam("processed %d files" % count)
         if count%1000 == 0:
+            logging.debug("processed %d files" % count)
             dbconnection.commit()
 
 dbconnection.commit()

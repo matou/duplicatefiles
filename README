@@ -7,3 +7,6 @@ in my backups and thusly reduce the data that I have to check manually.
 
 Since the script now uses a database for its collected data instead of having
 everything in memory it should work even with huge amounts of files.
+
+Once the tests with my hard drives were successfull I will start to cleaning up
+the code a bit.

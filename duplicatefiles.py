@@ -77,7 +77,7 @@ while len(dirs) > 0:
             if size <= threshold:
                 spam("ignored %s" % f)
                 continue
-            db.execute("INSERT INTO files VALUES(%d, '%s')" % (size, f))
+            db.execute("INSERT INTO files VALUES(?, ?)", (size, unicode(f, "UTF-8")))
             filecounter += 1
             # debug
             spam("found %d files" % filecounter)
@@ -92,6 +92,7 @@ while len(dirs) > 0:
 dbconnection.commit()
 
 logging.info("found %d files bigger than %d bytes" % (filecounter, threshold))
+logging.info("starting hashing of files")
 
 # replaced by table same
 # same = {}
@@ -109,8 +110,8 @@ while True:
     if len(entries) < 2:
         continue
     for entry in entries:
-        db.execute("INSERT INTO same VALUES ('%d:%s', '%s')" % 
-                (size, hash_file(entry[1]), entry[1]))
+        db.execute("INSERT INTO same VALUES (?, ?)",
+                (unicode("%d:%s" % (size, hash_file(entry[1])), "UTF-8"), entry[1]))
         count += 1
         spam("processed %d files" % count)
         if count%1000 == 0:
@@ -118,7 +119,8 @@ while True:
             dbconnection.commit()
 
 dbconnection.commit()
-
+logging.info("done hashing")
+logging.info("looking for duplicates")
 db.execute("SELECT DISTINCT tag FROM same AS s WHERE (SELECT COUNT(tag) FROM same as s2 where s2.tag=s.tag)>1")
 tags = db.fetchall()
 for tag in tags:

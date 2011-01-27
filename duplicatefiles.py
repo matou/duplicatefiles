@@ -118,8 +118,11 @@ while True:
     if len(entries) < 2:
         continue
     for entry in entries:
-        db.execute("INSERT INTO same VALUES (?, ?)",
-                (unicode("%d:%s" % (size, hash_file(entry[1])), "UTF-8"), entry[1]))
+        try:
+            db.execute("INSERT INTO same VALUES (?, ?)", 
+                    (unicode("%d:%s" % (size, hash_file(entry[1])), "UTF-8"), entry[1]))
+        except UnicodeEncodeError:
+            logging.error("%s caused a UnicodeEncodeError. That sucks! Trying to continue anyway." % entry[1])
         count += 1
         spam("processed %d files" % count)
         if count%1000 == 0:

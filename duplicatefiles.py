@@ -78,7 +78,7 @@ logging.info("searching for files in current directory ('%s')"
 
 # don't store this in the database. hopefully we won't have so many directories
 # that the programm will run out of memory
-dirs = [os.curdir]
+dirs = [unicode(os.curdir, "UTF-8")]
 
 # this dictionary is replaced by the files table in the database
 #files = {}
@@ -87,7 +87,7 @@ filecounter = 0
 while len(dirs) > 0:
     curdir = dirs.pop()
     for f in os.listdir(curdir):
-        f = curdir + os.sep + f
+        f = curdir + unicode(os.sep, "UTF-8") + f
         if os.path.islink(f):
             # don't bother us with links *grrr*
             spam("ignoring link: %s" % f)
@@ -98,7 +98,7 @@ while len(dirs) > 0:
                 spam("ignored %s" % f)
                 continue
             try:
-                db.execute("INSERT INTO files VALUES(?, ?)", (size, unicode(f, "UTF-8")))
+                db.execute("INSERT INTO files VALUES(?, ?)", (size, f))
             except UnicodeDecodeError:
                 logging.error("%s caused a UnicodeDecodeError. Ignoring and moving on." % f)
 

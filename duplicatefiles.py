@@ -139,7 +139,7 @@ while True:
     for entry in entries:
         try:
             db.execute("INSERT INTO same VALUES (?, ?)", 
-                    ("%d:%s" % (size, hash_file(entry[1]))), entry[1])
+                    ("%d:%s" % (size, hash_file(entry[1])), entry[1]))
         except UnicodeEncodeError:
             logging.error("%s caused a UnicodeEncodeError. That sucks! Trying to continue anyway." % entry[1])
         count += 1

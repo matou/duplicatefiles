@@ -60,7 +60,7 @@ logging.debug("threshold is %d" % threshold)
 def hash_file(path):
     "returns hashsum as string"
     spam("hashing %s" % path)
-    f = open(path)
+    f = open(path, mode="rb")
     md5 = hashlib.md5()
     while True:
         # do NOT load the whole file into memory

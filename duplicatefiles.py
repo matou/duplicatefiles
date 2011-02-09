@@ -160,4 +160,7 @@ for tag in tags:
         print("%s," % path[0]),
     print("")
 
+# remove the database file since we won't be using it again
+os.remove(database)
+
 logging.info("END OF LINE")

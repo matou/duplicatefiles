@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 
 #
 # Copyright (c) 2011 Matthias Matousek <matou@taunusstein.net>
@@ -78,7 +78,7 @@ logging.info("searching for files in current directory ('%s')"
 
 # don't store this in the database. hopefully we won't have so many directories
 # that the programm will run out of memory
-dirs = [unicode(os.curdir, "UTF-8")]
+dirs = [os.curdir]
 
 # this dictionary is replaced by the files table in the database
 #files = {}
@@ -86,8 +86,11 @@ dirs = [unicode(os.curdir, "UTF-8")]
 filecounter = 0
 while len(dirs) > 0:
     curdir = dirs.pop()
+    spam("curdir: %s" % curdir)
     for f in os.listdir(curdir):
-        f = curdir + unicode(os.sep, "UTF-8") + f
+        spam("type(f): %s" % type(f))
+        f = curdir + os.sep + f
+        spam("f: %s" % str(os.path.abspath(f)))
         if os.path.islink(f):
             # don't bother us with links *grrr*
             spam("ignoring link: %s" % f)
@@ -136,7 +139,7 @@ while True:
     for entry in entries:
         try:
             db.execute("INSERT INTO same VALUES (?, ?)", 
-                    (unicode("%d:%s" % (size, hash_file(entry[1])), "UTF-8"), entry[1]))
+                    ("%d:%s" % (size, hash_file(entry[1]))), entry[1])
         except UnicodeEncodeError:
             logging.error("%s caused a UnicodeEncodeError. That sucks! Trying to continue anyway." % entry[1])
         count += 1
@@ -152,9 +155,9 @@ db.execute("SELECT DISTINCT tag FROM same AS s WHERE (SELECT COUNT(tag) FROM sam
 tags = db.fetchall()
 for tag in tags:
     db.execute("SELECT path FROM same WHERE tag='%s'" % tag[0])
-    print "these files are the same: ",
+    print("these files are the same: "),
     for path in db:
         print("%s," % path[0]),
-    print ""
+    print("")
 
 logging.info("END OF LINE")
